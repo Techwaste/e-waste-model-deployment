@@ -5,7 +5,7 @@ from PIL import Image
 import numpy as np
 import tensorflow as tf
 import os
-
+import uvicorn
 
 
 port = int(os.getenv("PORT"))
