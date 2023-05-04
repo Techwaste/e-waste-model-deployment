@@ -4,6 +4,12 @@ import io
 from PIL import Image
 import numpy as np
 import tensorflow as tf
+import os
+
+
+
+port = int(os.getenv("PORT"))
+
 
 model = tf.keras.models.load_model('model/xception_latest.h5')
 app = FastAPI()
@@ -43,4 +49,9 @@ async def predict(file: UploadFile = File(...)):
     predict_class, predict_probability = predict_image(tf_image)
     
     return f"{predict_class} : {predict_probability}"
+
+
+
+if __name__ == '__main__':
+    uvicorn.run(app, host="0.0.0.0", port=port, timeout_keep_alive=1200)
     
