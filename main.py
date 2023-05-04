@@ -4,8 +4,6 @@ import io
 from PIL import Image
 import numpy as np
 import tensorflow as tf
-from tensorflow import keras
-from tensorflow import image as tfi
 
 model = tf.keras.models.load_model('model/xception_latest.h5')
 app = FastAPI()
@@ -36,6 +34,9 @@ def read_root():
 
 @app.post("/predict/")
 async def predict(file: UploadFile = File(...)):
+    extension = file.filename.split(".")[-1] in ("jpg", "jpeg", "png")
+    if not extension:
+        return "Image must be jpg, jpeg, or png format!"
     contents = await file.read()
     image = Image.open(io.BytesIO(contents))
     tf_image = preprocess_image(image)
