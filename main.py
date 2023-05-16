@@ -11,7 +11,7 @@ import io
 import random
 import json
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = json.dumps(os.getenv('secretAPI'))
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = os.getenv('secretAPI')
 form = str(random.randint(3, 3265792139879102375))
 port = int(os.getenv("PORT"))
 bucketName="techpybarahh"
