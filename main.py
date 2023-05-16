@@ -11,9 +11,9 @@ import io
 import random
 import json
 
-
-
-
+key_pi = os.getenv("cres")
+creden = json.loads(key_pi)
+['GOOGLE_APPLICATION_CREDENTIALS'] = creden
 
 form = str(random.randint(3, 3265792139879102375))
 port = int(os.getenv("PORT"))
@@ -35,20 +35,6 @@ def storage_thingy(blobName,filePath,bucketName):
 
     return blob
 
-def access_secret(project_id, secret_id, version):
-    client = secretmanager.SecretManagerServiceClient()
-    # Build the resource name of the secret version
-    name = client.secret_version_path(project_id, secret_id, version)
-
-    # Access the secret version
-    response = client.access_secret_version(name)
-
-    # Return the secret payload
-    payload = response.payload.data.decode('UTF-8')
-
-    return payload
-
-['GOOGLE_APPLICATION_CREDENTIALS'] = access_secret('project-aing', 'projects/971113644935/secrets/sec', 1)
 
 def preprocess_image(image):
     image = image.resize((300, 300))
