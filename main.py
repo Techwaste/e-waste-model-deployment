@@ -1,21 +1,38 @@
-from fastapi import FastAPI, File, UploadFile
 
-import io
+from fastapi import FastAPI, File, UploadFile
+from google.cloud import storage
+
 from PIL import Image
 import numpy as np
 import tensorflow as tf
 import os
 import uvicorn
+import io
+import random
+import json
 
-
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = json.dumps(os.getenv('secretAPI'))
+form = str(random.randint(3, 3265792139879102375))
 port = int(os.getenv("PORT"))
-
-
+bucketName="techpybarahh"
 model = tf.keras.models.load_model('model/xception_latest.h5')
 app = FastAPI()
 class_names = ['battery', 'cable', 'crt_tv', 'e_kettle', 'fridge', 'keyboard',
                'laptop', 'light_bulb', 'monitor', 'mouse', 'pcb',
                'phone', 'printer', 'rice_cooker', 'washing_machine']
+
+def storage_thingy(blobName,filePath,bucketName):
+    storageClient = storage.Client()
+    dir(storageClient)
+    bucket = storageClient.bucket(bucketName)
+    vars(bucket)
+    bucket = storageClient.get_bucket(bucketName)
+    blob = bucket.blob(blobName)
+    blob.upload_from_filename(filePath)
+
+    return blob
+
+
 
 def preprocess_image(image):
     image = image.resize((300, 300))
@@ -45,13 +62,14 @@ async def predict(file: UploadFile = File(...)):
         return "Image must be jpg, jpeg, or png format!"
     contents = await file.read()
     image = Image.open(io.BytesIO(contents))
+    image.save(file.filename)
     tf_image = preprocess_image(image)
     predict_class, predict_probability = predict_image(tf_image)
-    
+    storage_thingy("predictSave/"+predict_class+form,file.filename,bucketName)
+    os.remove(file.filename)
     return f"{predict_class} : {predict_probability}"
 
 
 
 if __name__ == '__main__':
     uvicorn.run(app, host="0.0.0.0", port=port, timeout_keep_alive=1200)
-    
