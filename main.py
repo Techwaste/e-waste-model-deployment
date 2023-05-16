@@ -13,7 +13,7 @@ import json
 
 key_pi = os.getenv("cres")
 creden = json.loads(key_pi)
-['GOOGLE_APPLICATION_CREDENTIALS'] = creden
+GOOGLE_APPLICATION_CREDENTIALS = creden
 
 form = str(random.randint(3, 3265792139879102375))
 port = int(os.getenv("PORT"))
