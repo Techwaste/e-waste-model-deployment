@@ -10,6 +10,7 @@ import uvicorn
 import io
 import random
 import json
+import mysql.connector
 
 key_pi = os.getenv("cres")
 GOOGLE_APPLICATION_CREDENTIALS = key_pi
@@ -52,6 +53,27 @@ def predict_image(image):
     
     return predicted_class_name, predicted_probability
 
+def getCompId(name):
+    
+    mydb = mysql.connector.connect(
+        host=os.getenv("HOST"),
+        user=os.getenv("USER"),
+        password=os.getenv("PASSWORD"),
+        database="components"
+    )
+
+    mycursor = mydb.cursor()
+    meow = name
+    meowmeow = (meow,)
+    mycursor.execute("SELECT * FROM comps WHERE name= %s", meowmeow)
+    myresult = mycursor.fetchall()
+    compid = myresult[0][0]
+    if compid is not None:
+        return compid
+    else:
+        return False
+
+
 @app.get("/")
 def read_root():
     return {"Welcome to TechWas (Technology Waste), Daniel"}
@@ -68,7 +90,11 @@ async def predict(file: UploadFile = File(...)):
     predict_class, predict_probability = predict_image(tf_image)
     storage_thingy("predictSave/"+predict_class+form,file.filename,bucketName)
     os.remove(file.filename)
-    return f"{predict_class} : {predict_probability}"
+    theMeowMeow=getCompId(predict_class)
+    return {
+        "compName":theMeowMeow,
+        "predict_class" : "predict_probability"
+        }
 
 
 
