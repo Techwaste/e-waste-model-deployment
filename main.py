@@ -56,9 +56,9 @@ def predict_image(image):
 def getCompId(name):
     
     mydb = mysql.connector.connect(
-        host=os.getenv("HOST"),
-        user=os.getenv("USER"),
-        password=os.getenv("PASSWORD"),
+        host="34.69.199.102",
+        user="root",
+        password="J]91kx6G&S:^]'Gu",
         database="components"
     )
 
@@ -93,7 +93,7 @@ async def predict(file: UploadFile = File(...)):
     theMeowMeow=getCompId(predict_class)
     return {
         "compName":theMeowMeow,
-        "predict_class" : "predict_probability"
+        f"predict_class" : f"predict_probability"
         }
 
 
