@@ -93,7 +93,7 @@ async def predict(file: UploadFile = File(...)):
     theMeowMeow=getCompId(predict_class)
     return {
         "compName":theMeowMeow,
-        f"predict_class" : f"predict_probability"
+        predict_class : predict_probability
         }
 
 
