@@ -90,9 +90,8 @@ async def predict(file: UploadFile = File(...)):
     predict_class, predict_probability = predict_image(tf_image)
     storage_thingy("predictSave/"+predict_class+form,file.filename,bucketName)
     os.remove(file.filename)
-    theMeowMeow=getCompId(predict_class)
     return {
-        "compName":theMeowMeow,
+        "compID":getCompId(predict_class),
         predict_class : predict_probability
         }
 
