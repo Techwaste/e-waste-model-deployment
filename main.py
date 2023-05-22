@@ -25,9 +25,9 @@ async def predict(file: UploadFile = File(...)):
 
     image = Image.open(io.BytesIO(contents))
     tf_image = f.preprocess_image(image)
-    predict_class, predict_probability = f.predict_image(tf_image)
+    data_predict = f.predict_image(tf_image)
 
-    return {predict_class : predict_probability}
+    return data_predict
 
 if __name__ == '__main__':
     uvicorn.run(app, host="0.0.0.0", port=port, timeout_keep_alive=1200)

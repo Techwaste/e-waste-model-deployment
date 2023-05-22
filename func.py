@@ -24,19 +24,20 @@ def preprocess_image(image: Image) -> np.ndarray:
     
     return image_array
 
-def predict_image(image: np.ndarray) -> tuple[str, float]:
-    """Predicts the class name and probability for an image.
+def predict_image(image: np.ndarray) -> dict:
+    """Predicts the top 3 classes for an image using a pre-trained model.
 
     Args:
-        image (np.ndarray): The image to be predicted.
+        image (np.ndarray): An image represented as a NumPy array.
 
     Returns:
-        tuple[str, float]: A tuple containing the predicted class name and probability.
+        dict: A dictionary containing the top 3 predicted classes and their probabilities.
     """
     predictions = model.predict(image)
-    prediction_idx = np.argmax(predictions)
-    
-    predicted_class_name = class_names[prediction_idx]
-    predicted_probability = np.max(predictions) * 100
-    
-    return predicted_class_name, predicted_probability
+    top_3_indices = np.argsort(predictions)[0,-3:][::-1]
+
+    data_predictions = {}
+    for i in top_3_indices:
+        data_predictions[class_names[i]] = predictions[0, i] * 100
+        
+    return data_predictions
