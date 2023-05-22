@@ -1,19 +1,22 @@
 from fastapi import FastAPI
+from enum import Enum
 
 description = """
 Endpoints for anything related to Image Classifications
 
 You will be able to:
 
-* **Preprocessing Image** (implemented).
 * **Predict Image** (implemented).
 """
 
+class Tags(Enum):
+    """
+    An enumeration representing tags name in tags_metadata.
+    """
+
+    predict = "predict"
+
 tags_metadata = [
-    {
-        "name": "preprocessing",
-        "description": "Preprocessing an Image to match the model",
-    },
     {
         "name": "predict",
         "description": "Predict an Image",
