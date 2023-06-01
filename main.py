@@ -16,8 +16,10 @@ GOOGLE_APPLICATION_CREDENTIALS = key_pi
 
 app = config.app
 form = str(random.randint(3, 3265792139879102375))
-bucketName="techpybarahh"
-def storage_thingy(blobName,filePath,bucketName):
+bucketName = "techpybarahh"
+
+
+def storage_thingy(blobName, filePath, bucketName):
     storageClient = storage.Client()
     dir(storageClient)
     bucket = storageClient.bucket(bucketName)
@@ -30,12 +32,11 @@ def storage_thingy(blobName,filePath,bucketName):
 
 
 def getCompId(name):
-    
     mydb = mysql.connector.connect(
         host="34.69.199.102",
         user="root",
         password="J]91kx6G&S:^]'Gu",
-        database="components"
+        database="components",
     )
 
     mycursor = mydb.cursor()
@@ -54,8 +55,10 @@ def getCompId(name):
 def read_root():
     return {"Welcome to TechWas (Technology Waste)"}
 
+
 @app.post("/predict/", tags=[Tags.predict])
 async def predict(file: UploadFile = File(...)):
+    time = f.timer(None)
     extension = file.filename.split(".")[-1] in ("jpg", "jpeg")
     if not extension:
         return "Image must be jpg or jpeg format!"
@@ -68,10 +71,10 @@ async def predict(file: UploadFile = File(...)):
     savedClass = data_predict.keys()
     savedClass = list(savedClass)
     savedClass = savedClass[0]
-    storage_thingy("predictSave/"+savedClass+form,file.filename,bucketName)
+    storage_thingy("predictSave/" + savedClass + form, file.filename, bucketName)
     os.remove(file.filename)
-    return data_predict
+    return {"predictions": data_predict, "time_taken": f.timer(time)}
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=port, timeout_keep_alive=1200)
-
