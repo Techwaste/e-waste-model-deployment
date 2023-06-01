@@ -8,15 +8,22 @@ import api_config as config
 import func as f
 from api_config import Tags
 import random
+from dotenv import load_dotenv
 
+load_dotenv()
+
+print(os.getenv("cres"))
 port = int(os.getenv("PORT"))
 
 key_pi = os.getenv("cres")
-GOOGLE_APPLICATION_CREDENTIALS = key_pi
-
+# GOOGLE_APPLICATION_CREDENTIALS = key_pi
+with open("service_account.json", "w") as file:
+    file.write(key_pi)
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./service_account.json"
 app = config.app
 form = str(random.randint(3, 3265792139879102375))
 bucketName = "techpybarahh"
+
 
 
 def storage_thingy(blobName, filePath, bucketName):
