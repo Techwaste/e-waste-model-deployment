@@ -54,14 +54,11 @@ def predict_image(image: np.ndarray) -> dict:
     predictions = model.predict(image)
     top_3_indices = np.argsort(predictions)[0, -3:][::-1]
 
-    data_list = []
+    data_predictions = {}
     for i in top_3_indices:
-        data_predictions = {}
-        data_predictions["Components Name"] = (class_names[i])
-        data_predictions["Components Value"] = (predictions[0, i] * 100)
-        data_list.append(data_predictions)
+        data_predictions[class_names[i]] = predictions[0, i] * 100
 
-    return data_list
+    return data_predictions
 
 
 def timer(start_time: datetime = None) -> "typing.Union[datetime.datetime, str]":
