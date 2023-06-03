@@ -9,6 +9,7 @@ import func as f
 from api_config import Tags
 import random
 from dotenv import load_dotenv
+import mysql.connector
 
 load_dotenv()
 
@@ -38,26 +39,6 @@ def storage_thingy(blobName, filePath, bucketName):
     return blob
 
 
-def getCompId(name):
-    mydb = mysql.connector.connect(
-        host="34.69.199.102",
-        user="root",
-        password="J]91kx6G&S:^]'Gu",
-        database="components",
-    )
-
-    mycursor = mydb.cursor()
-    meow = name
-    meowmeow = (meow,)
-    mycursor.execute("SELECT * FROM comps WHERE name= %s", meowmeow)
-    myresult = mycursor.fetchall()
-    compid = myresult[0][0]
-    if compid is not None:
-        return compid
-    else:
-        return False
-
-
 @app.get("/")
 def read_root():
     return {"Welcome to TechWas (Technology Waste)"}
@@ -70,17 +51,19 @@ async def predict(file: UploadFile = File(...)):
     if not extension:
         return "Image must be jpg or jpeg format!"
     contents = await file.read()
-
+    savedform = form
     image = Image.open(io.BytesIO(contents))
     image.save(file.filename)
     tf_image = f.preprocess_image(image)
     data_predict = f.predict_image(tf_image)
-    savedClass = data_predict.keys()
-    savedClass = list(savedClass)
-    savedClass = savedClass[0]
-    storage_thingy("predictSave/" + savedClass + form, file.filename, bucketName)
+    savedClass = data_predict
+    savedClass = str(savedClass[0]["Components Name"])
+    storage_thingy("predictSave/" + savedClass + savedform, file.filename, bucketName)
     os.remove(file.filename)
-    return {"predictions": data_predict, "time_taken": f.timer(time)}
+    return {"predictions": data_predict,
+     "time_taken": f.timer(time),
+     "Image_Url": "https://storage.googleapis.com/techpybarahh/predictSave/"+savedClass+savedform
+     }
 
 
 if __name__ == "__main__":
