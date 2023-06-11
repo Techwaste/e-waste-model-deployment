@@ -23,7 +23,7 @@ with open("service_account.json", "w") as file:
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./service_account.json"
 app = config.app
 form = str(random.randint(3, 3265792139879102375))
-bucketName = "techpybarahh"
+bucketName = "techwaste"
 
 
 
@@ -62,7 +62,7 @@ async def predict(file: UploadFile = File(...)):
     os.remove(file.filename)
     return {"predictions": data_predict,
      "time_taken": f.timer(time),
-     "Image_Url": "https://storage.googleapis.com/techpybarahh/predictSave/"+savedClass+savedform
+     "Image_Url": "https://storage.googleapis.com/techwaste/predictSave/"+savedClass+savedform
      }
 
 
